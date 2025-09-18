@@ -7,11 +7,7 @@ const config = require("@config");
 exports.required = (req, res, next) => {
   try {
     // Get token from header
-    const authHeader = req.headers.authorization;
-    console.log("Auth header:", authHeader);
-    
-    const token = authHeader?.split(" ")[1];
-    console.log("Extracted token:", token);
+    const token = req.headers.authorization?.split(" ")[1];
 
     if (!token) {
       return res.status(401).json({
@@ -21,9 +17,7 @@ exports.required = (req, res, next) => {
     }
 
     // Verify token
-    console.log("JWT Secret:", config.jwtSecret);
     const decoded = jwt.verify(token, config.jwtSecret);
-    console.log("Decoded token:", decoded);
 
     // Add decoded user data to request
     req.user = {
@@ -33,7 +27,6 @@ exports.required = (req, res, next) => {
 
     next();
   } catch (error) {
-    console.log("JWT Error:", error.message);
     return res.status(401).json({
       status: "error",
       message: "Invalid token",
