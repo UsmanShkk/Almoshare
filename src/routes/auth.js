@@ -5,7 +5,8 @@ const {
     loginUser,
     loginWithGoogle,
     getContext,
-    forgetPassword
+    forgetPassword,
+    resetPassword
   } = require("@controllers/auth.controllers");
 
   router.post("/register", registerUser);
@@ -13,4 +14,5 @@ const {
   router.post("/login/google", loginWithGoogle);
   router.get("/context", getContext);
   router.post("/forget-password", forgetPassword);
+  router.post("/reset-password/:token", resetPassword);
   module.exports = router;
