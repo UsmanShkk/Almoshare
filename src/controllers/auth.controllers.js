@@ -487,4 +487,82 @@ const loginWithGoogle = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, loginWithGoogle, getContext };
+const nodemailer = require('nodemailer'); 
+
+// Configure nodemailer transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: config.EMAIL_USER,
+    pass: config.EMAIL_PASS
+  }
+});
+
+const forgetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({
+      email: { $regex: `^${email.trim()}$`, $options: "i" }
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Generate token
+    const token = crypto.randomBytes(32).toString("hex");
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    await user.save();
+
+    // Email content
+    const resetUrl = `/reset-password/${token}`;
+    const mailOptions = {
+      from: config.EMAIL_USER,
+      to: user.email,
+      subject: "Password Reset Request",
+      html: `<p>You requested a password reset</p>
+             <p>Click here: <a href="${resetUrl}">${resetUrl}</a></p>`
+    };
+
+    await transporter.sendMail(mailOptions);
+    res.json({ message: "Password reset email sent" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const { password } = req.body;
+  const { token } = req.params;
+
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired token" });
+    }
+
+    // Hash new password
+    user.password = await bcrypt.hash(password, 12);
+
+    // Clear token
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+    res.json({ message: "Password has been reset successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+
+module.exports = { registerUser, loginUser, loginWithGoogle, getContext, forgetPassword, resetPassword };

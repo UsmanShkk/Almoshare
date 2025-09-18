@@ -16,6 +16,8 @@ const config = {
   jwtExpiresIn: process.env.JWT_EXPIRES_IN || '24h',
   AWS_BUCKET_NAME: process.env.AWS_BUCKET_NAME,
   AWS_REGION: process.env.AWS_REGION,
+  EMAIL_USER:process.env.EMAIL_USER ,
+  EMAIL_PASS:process.env.EMAIL_PASS ,
   s3Link(fileName) {
     return `https://${this.AWS_BUCKET_NAME}.s3.${this.AWS_REGION}.amazonaws.com/${fileName}`;
   },  
