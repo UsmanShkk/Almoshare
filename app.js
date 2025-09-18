@@ -21,13 +21,15 @@ mongoose.connect(config.database.mongoUri)
 
 const authRoutes = require('@routes/auth');
 const uploadRoutes = require("@routes/upload");
+const settingsRoutes = require("@routes/settings");
 
 app.use(express.json());
 
 
 // API Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/upload', uploadRoutes)
+app.use('/api/upload', uploadRoutes);
+app.use('/api/settings', settingsRoutes);
 
 // Example route
 app.get("/", (req, res) => {

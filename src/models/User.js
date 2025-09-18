@@ -48,6 +48,26 @@ const userSchema = new mongoose.Schema({
     type: String,
     trim: true
   },
+
+  // Additional profile fields
+  website: {
+    type: String,
+    trim: true,
+    default: null
+  },
+
+  location: {
+    type: String,
+    trim: true,
+    default: null
+  },
+
+  bio: {
+    type: String,
+    trim: true,
+    maxlength: [500, 'Bio cannot exceed 500 characters'],
+    default: null
+  },
   
   // For Google/Apple login
   googleId: String,
@@ -101,6 +121,10 @@ userSchema.methods.toAuthJSON = function() {
     fullName: this.fullName,
     email: this.email,
     username: this.username,
+    photo: this.photo,
+    website: this.website,
+    location: this.location,
+    bio: this.bio,
     googleId: this.googleId,
     appleId: this.appleId,
     referralCode: this.referralCode
