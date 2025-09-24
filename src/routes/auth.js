@@ -4,6 +4,7 @@ const {
     registerUser,
     loginUser,
     loginWithGoogle,
+    logout,
     getContext,
     forgetPassword,
     resetPassword,
@@ -13,6 +14,7 @@ const {
   router.post("/register", registerUser);
   router.post("/login", loginUser);
   router.post("/login/google", loginWithGoogle);
+  router.post("/logout", logout);
   router.get("/context", getContext);
   router.post("/forget-password", forgetPassword);
   router.post("/reset-password/:token", resetPassword);

@@ -602,6 +602,26 @@ const deleteAccount = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    // For token-based authentication, you can simply inform the client to remove the token
+    res.status(200).json({
+      success: true,
+      message: 'Logout successful'
+    });
+
+    // If you are using a token blacklist or session store, you can implement token invalidation here
+    // Example: Add the token to a blacklist or remove it from the session store
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+};
 
 
-module.exports = { registerUser, loginUser, loginWithGoogle, getContext, forgetPassword, resetPassword, deleteAccount };
+
+
+module.exports = { registerUser, loginUser, loginWithGoogle, logout, getContext, forgetPassword, resetPassword, deleteAccount };
